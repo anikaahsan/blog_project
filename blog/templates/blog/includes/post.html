@@ -2,14 +2,14 @@
 <li>
     <article class="post">
 
-        <a href="{% url 'post-detail-page'  'the-skydiving' %}"> 
+        <a href="{% url 'post-detail-page' i.slug %}"> 
 
             <img src="{% static 'blog/images/skydiving.jpg' %}"  alt="skydiving_image" > 
 
             <div class="post__content">
-                <h3>skydiving</h3>
-                <p>i am fascinated with the view i 
-                    witnessed while skydiving
+                <h3>{{ i.title}}</h3>
+                <p>
+                    {{ i.content }}
                 </p>
             </div>
 

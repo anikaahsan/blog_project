@@ -13,32 +13,36 @@ Post detail
 {% block content %}
 
 <section id="summary">
-    <h2>Post title</h2>
+    <h2>{{ post.title }}</h2>
 
     <article>
-        <img src="" alt="post tile">
-        <address>By anika</address>
+        <img src="" alt="post title">
+        <address>By <a href="mailto:{{post.author.email}}">{{ post.author }}</a></address>
         <div>
-            last updated on <time>feb 21th</time>
+            last updated on <time>{{ post.date }}</time>
         </div>
     </article>
 
 </section>    
     
 <main>
-    <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur facilis laborum reprehenderit blanditiis mollitia id? 
-        Consequatur autem nihil aperiam ipsa quibusdam quidem unde culpa ab 
-        labore, delectus illum dolor officiis! 
-    </p>
-
-    <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur facilis laborum reprehenderit blanditiis mollitia id? 
-        Consequatur autem nihil aperiam ipsa quibusdam quidem unde culpa ab 
-        labore, delectus illum dolor officiis! 
+    <p> 
+        {{ post.content|linebreaks }}
     </p>
 </main>
 
+<section>
+    
+    <form method="post" id="comment-form" action="{% url 'post-detail-page' post.slug  %}">
+        {% csrf_token %}
 
+        <div class="form-control">
+             {{ form }}
+        </div>
+        <button>save comment</button>
 
+    </form>
+</section>
 
 
 {% endblock %}

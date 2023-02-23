@@ -17,13 +17,17 @@
 <section id="all-posts">
     <h2>My collected posts</h2>
     <ul>
+      {% for i in post %}
         {% include 'blog/includes/post.html' %}
-        {% include 'blog/includes/post.html' %}
-        {% include 'blog/includes/post.html' %}
-        {% include 'blog/includes/post.html' %}
-        {% include 'blog/includes/post.html' %}
+       
+      {% endfor %}  
     </ul>
 </section>
 
 
 {% endblock %}
+
+<!-- {% include 'blog/includes/post.html' %}
+{% include 'blog/includes/post.html' %}
+{% include 'blog/includes/post.html' %}
+{% include 'blog/includes/post.html' %} -->

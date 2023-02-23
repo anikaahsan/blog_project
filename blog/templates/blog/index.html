@@ -25,8 +25,9 @@
 <section id="latest-posts">
     <h2>My latest thoughts</h2>
     <ul>
+        {% for i in post %}
         {% include 'blog/includes/post.html'  %}
-
+        {% endfor %}
     </ul>
 
 </section>
