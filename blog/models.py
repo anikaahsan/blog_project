@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -15,6 +16,7 @@ class Author(models.Model):
     first_name=models.CharField(max_length=255) 
     last_name=models.CharField(max_length=255)   
     email=models.EmailField()
+    user=models.OneToOneField(User ,on_delete=models.CASCADE ,null=True)
 
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
@@ -43,5 +45,6 @@ class Comment(models.Model):
     email=models.EmailField()
     text=models.TextField()
     post=models.ForeignKey(Post, on_delete=models.CASCADE ,related_name='comments')      
-   
+    is_approved=models.BooleanField(default=True)
+
 

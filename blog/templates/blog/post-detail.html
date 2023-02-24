@@ -31,9 +31,10 @@ Post detail
     </p>
 </main>
 
-<section>
+
+<section id="comment-form">
     
-    <form method="post" id="comment-form" action="{% url 'post-detail-page' post.slug  %}">
+    <form method="post"  action="{% url  'post-detail-page' post.slug  %}">
         {% csrf_token %}
 
         <div class="form-control">
@@ -41,6 +42,28 @@ Post detail
         </div>
         <button>save comment</button>
 
+    </form>
+</section>
+
+<section id="comments" >
+   <form method="post" action="{% url 'starting-page' %}">
+      {% csrf_token %}
+
+        <h2>All Comments</h2>
+        
+        <ul>
+            {% if comment %}
+            {% for i in comment %}
+            <li>
+                <h2> {{ i.email }}</h2>
+            <p> {{ i.text|linebreaks }}</p>
+            
+             <button>approve</button>
+            
+            </li>   
+            {% endfor %}
+            {% endif %}
+        </ul>
     </form>
 </section>
 
