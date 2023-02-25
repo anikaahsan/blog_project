@@ -1,6 +1,45 @@
 
-<form method="POST" action="{% url 'signup' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button> enter</button>
-</form>
+{% load static %}
+
+
+
+
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static 'blog/signup.css' %}" >
+
+{% endblock %}
+
+{% block content %}
+  
+        <div class="form-wrap">
+			<h1>Sign Up</h1>
+			<form method="POST" action="{% url 'signup' %}">
+				{% csrf_token %}
+				{% for i in form %}
+				   <h3>{{ i.label }}</h3>
+				   {{ i }}<br>
+				{% endfor %}   
+				<button> signup</button>
+				<br>
+				<br>
+		        
+				<h4>already have a account?? <a href="{% url 'login' %}">login</a></h4>
+
+			</form>
+        
+            <!-- <form> -->
+            
+               
+
+                <!-- <input type="text" placeholder="Name">
+                <input type="text" placeholder="Username">
+                <input type="email" placeholder="Email">
+                <input type="password" placeholder="Password">
+                <input type="password" placeholder="Confirm Password">
+                <input type="button" value="Sign Up"> -->
+            
+            <!-- </form> -->
+        
+        </div>      
+{% endblock %}

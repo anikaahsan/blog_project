@@ -12,17 +12,17 @@ class Tag(models.Model):
 
 
 
-class Author(models.Model):
-    first_name=models.CharField(max_length=255) 
-    last_name=models.CharField(max_length=255)   
-    email=models.EmailField()
-    user=models.OneToOneField(User ,on_delete=models.CASCADE ,null=True)
+# class Author(models.Model):
+#     first_name=models.CharField(max_length=255) 
+#     last_name=models.CharField(max_length=255)   
+#     email=models.EmailField()
+#     user=models.OneToOneField(User ,on_delete=models.CASCADE ,null=True)
 
-    def full_name(self):
-        return f"{self.first_name} {self.last_name}"
+#     def full_name(self):
+#         return f"{self.first_name} {self.last_name}"
 
-    def __str__(self):
-        return self.full_name()
+#     def __str__(self):
+#         return self.full_name()
 
 
 class Post(models.Model):
@@ -33,7 +33,7 @@ class Post(models.Model):
     image=models.ImageField(upload_to='posts',null=True)
     image_name=models.CharField(max_length=255)
     content=models.TextField(validators=[MinLengthValidator(10)])
-    author=models.ForeignKey(Author , on_delete=models.SET_NULL ,null=True,related_name='posts')
+    author=models.ForeignKey(User , on_delete=models.SET_NULL ,null=True,related_name='posts')
     tags=models.ManyToManyField(Tag)
 
     def __str__(self):

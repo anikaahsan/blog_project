@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse
-from .models import Post, Author, Tag, Comment
+from .models import Post,  Tag, Comment
 from .forms import CommentForm,UserForm
+from django.contrib import messages
 
 # Create your views here.
 def starting_page(request):
@@ -45,7 +46,8 @@ def signup_function(request):
         if form.is_valid():
             print('hi')
             form.save()
-            return redirect('starting-page')
+            messages.success(request,'signup successful')
+            return redirect('login')
         else:
             
             return redirect('signup')
@@ -55,3 +57,10 @@ def signup_function(request):
         signupform=UserForm()
         return render(request ,'blog/signupform.html',{'form':signupform})      
 
+
+
+
+
+def approve(request ,id ):
+    commentobject=Comment.objects.get(pk=id)
+    commentobject.is_approved=False

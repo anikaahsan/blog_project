@@ -59,15 +59,12 @@ Post detail
             <p> {{ i.text|linebreaks }}</p>
 
             {% if user.is_authenticated %}
-                {% if user.id ==  post.author %} 
-                  hiiiiiiiiiiiiiiiii
-                  <a href="{% url 'approve' i.id  %}">approve</a>
+            {% if user.email==post.author.email %} 
+                  <a href="">approve</a>
                   <a href=""> delete</a>
-                {% endif %} 
-            {% endif %}    
+            {% endif %} 
+        {% endif %}    
 
-            
-           
             
             </li>   
             {% endfor %}
