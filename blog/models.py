@@ -42,7 +42,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
     username=models.CharField(max_length=255)
-    email=models.EmailField()
+    email=models.EmailField(null=True,blank=True)
     text=models.TextField()
     post=models.ForeignKey(Post, on_delete=models.CASCADE ,related_name='comments')      
     is_approved=models.BooleanField(default=True)

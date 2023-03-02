@@ -34,7 +34,7 @@ Post detail
 
 <section id="comment-form">
     
-    <form method="post"  action="{% url  'post-detail-page' post.slug  %}">
+    <form method="post"  action="{% url  'post-detail-page' post.pk  %}">
         {% csrf_token %}
 
         <div class="form-control">
@@ -65,7 +65,7 @@ Post detail
                 {% endif  %}
             {% if request.user.is_authenticated %}
                 {% if request.user ==  post.author %} 
-                  <button ><a href="{% url 'approve' comment.id  %}">approve</a></button>
+                  <button ><a href="{% url 'approve' comment.id  %}">don't approve</a></button>
                   <button ><a href="{% url 'comment-delete' comment.id %}"> delete</a></button>
                 {% endif %} 
             {% endif %}              
