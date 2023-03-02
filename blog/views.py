@@ -1,13 +1,14 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse
-from .models import Post,  Tag, Comment
-from .forms import CommentForm,UserForm
+from .models import Post,   Comment
+from .forms import CommentForm,UserForm,WritePostForm
+from django.template.defaultfilters import slugify
 from django.contrib import messages
 
 # Create your views here.
 def starting_page(request):
-    queryset=Post.objects.all().order_by("date")[ :3]
+    queryset=Post.objects.all().order_by('-date')[ :3]
 
     return render(request,'blog/index.html' ,{'post':queryset})
 
@@ -36,7 +37,7 @@ def post_detail(request,slug):
         comment=Comment.objects.filter(post=post).order_by('-pk')
         context=dict(post=post ,
         form=commentform,
-        comment=comment)
+        comments=comment)
 
         return render(request, 'blog/post-detail.html' ,context)
 
@@ -44,7 +45,6 @@ def signup_function(request):
     if request.method=='POST':
         form=UserForm(request.POST)
         if form.is_valid():
-            print('hi')
             form.save()
             messages.success(request,'signup successful')
             return redirect('login')
@@ -63,4 +63,31 @@ def signup_function(request):
 
 def approve(request ,id ):
     commentobject=Comment.objects.get(pk=id)
-    commentobject.is_approved=False
+    commentobject.is_approved=False 
+
+
+def comment_delete(request,id):
+    commentobject=Comment.objects.get(pk=id)
+    commentobject.delete()    
+
+
+def write_post(request):
+    if request.method=='POST':
+        postform=WritePostForm(request.POST, request.FILES)
+        print("form")
+        print(postform.__dict__)
+        if postform.is_valid():
+            postform.save(commit=True)
+            return redirect('posts-page')
+        else:
+            print(postform.errors)
+            print('not saved') 
+            return redirect('write-post')  
+
+
+
+
+    else:    
+        postform=WritePostForm()
+        context=dict(form=postform)
+        return render(request,'blog/writepost.html',context)    

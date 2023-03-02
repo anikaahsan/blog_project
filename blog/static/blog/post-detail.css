@@ -140,3 +140,24 @@ body {
   #comments h2 {
     color: #464646;
   }
+
+ button{
+    font:inherit;
+    background-color:#390281;
+    color:white;
+    border:1px solid #390281;
+    padding:0.5rem 1.5rem;
+    border-radius:6px;
+    cursor:pointer;
+
+  }
+   button:hover,
+   button:active{
+    background-color:#6e18b4;
+    border-color:#390281;
+  }
+  a {
+    color:white;
+    text-decoration:none;
+  }
+  

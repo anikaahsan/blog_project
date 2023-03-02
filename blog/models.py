@@ -4,11 +4,11 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class Tag(models.Model):
-    caption=models.CharField(max_length=255)
+# class Tag(models.Model):
+#     caption=models.CharField(max_length=255)
 
-    def __str__(self):
-        return self.caption
+#     def __str__(self):
+#         return self.caption
 
 
 
@@ -27,14 +27,14 @@ class Tag(models.Model):
 
 class Post(models.Model):
     title=models.CharField(max_length=255)
-    excerpt=models.CharField(max_length=255)
+    excerpt=models.CharField(max_length=255,null=True,blank=True)
     date=models.DateTimeField(auto_now=True)
-    slug=models.SlugField(unique=True ,db_index=True)
+    slug=models.SlugField(unique=True ,db_index=True ,null=True,blank=True)
     image=models.ImageField(upload_to='posts',null=True)
-    image_name=models.CharField(max_length=255)
-    content=models.TextField(validators=[MinLengthValidator(10)])
+    image_name=models.CharField(max_length=255,null=True,blank=True)
+    content=models.TextField()
     author=models.ForeignKey(User , on_delete=models.SET_NULL ,null=True,related_name='posts')
-    tags=models.ManyToManyField(Tag)
+    
 
     def __str__(self):
         return self.title
@@ -48,3 +48,4 @@ class Comment(models.Model):
     is_approved=models.BooleanField(default=True)
 
 
+# validators=[MinLengthValidator(10)]

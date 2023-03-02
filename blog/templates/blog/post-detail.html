@@ -38,7 +38,11 @@ Post detail
         {% csrf_token %}
 
         <div class="form-control">
-             {{ form }}
+            {% if request.user.is_authenticated %}
+              {{ form.text}}
+            {% else %}  
+               {{ form}}
+            {% endif %}           
         </div>
         <button>save comment</button>
 
@@ -52,23 +56,19 @@ Post detail
         <h2>All Comments</h2>
         
         <ul>
-            {% if comment %}
-            {% for i in comment %}
+            {% if comments %}
+            {% for comment in comments %}
             <li>
-                <h2> {{ i.email }}</h2>
-            <p> {{ i.text|linebreaks }}</p>
-
-            {% if user.is_authenticated %}
-                {% if user.id ==  post.author %} 
-                  hiiiiiiiiiiiiiiiii
-                  <a href="{% url 'approve' i.id  %}">approve</a>
-                  <a href=""> delete</a>
+                {% if comment.is_approved %}
+                   <h2> {{ comment.email }}</h2>
+                   <p> {{ comment.text|linebreaks }}</p>
+                {% endif  %}
+            {% if request.user.is_authenticated %}
+                {% if request.user ==  post.author %} 
+                  <button ><a href="{% url 'approve' comment.id  %}">approve</a></button>
+                  <button ><a href="{% url 'comment-delete' comment.id %}"> delete</a></button>
                 {% endif %} 
-            {% endif %}    
-
-            
-           
-            
+            {% endif %}              
             </li>   
             {% endfor %}
             {% endif %}

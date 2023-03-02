@@ -5,7 +5,7 @@ from .import models
 @admin.register(models.Post)
 class PostAdmin(admin.ModelAdmin):
     list_display=['title','author','date']
-    list_filter=['author','tags','date']
+    list_filter=['author','date']
     prepopulated_fields={'slug':["title"]}
 
 
@@ -13,9 +13,9 @@ class PostAdmin(admin.ModelAdmin):
 # class AuthorAdmin(admin.ModelAdmin):
 #       list_display=['first_name','last_name' ,'email']   
 
-@admin.register(models.Tag)
-class TagAdmin(admin.ModelAdmin):
-   pass
+# @admin.register(models.Tag)
+# class TagAdmin(admin.ModelAdmin):
+#    pass
 
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):

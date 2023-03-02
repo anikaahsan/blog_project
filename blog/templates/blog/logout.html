@@ -1,1 +1,11 @@
-<h1>you are logout </h1>
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'blog/logout.css' %}">
+
+
+<div class="form-wrap"> 
+    <h1>you are logged out successfully!!!</h1>
+    <button class="p-3"><a href="{% url 'login' %}"> login again</a></h4></button>
+    <button class="p-3"><a href="{% url 'starting-page'  %}">go to index page</a></button>
+</div>

@@ -1,0 +1,43 @@
+*{
+  padding: 110;
+ }
+
+
+body{
+  background: #a169fa;
+   font-family: sans-serif;
+  }
+
+  .form-wrap{ 
+    width: 1000px; 
+    height:300;
+    background: #673dff; 
+    padding: 40px 90px; 
+    box-sizing: border-box; 
+    position: fixed; 
+    left: 50%; 
+    top: 50%; 
+    transform: translate(-50%, -50%);
+  }
+
+
+  button{
+    font:inherit;
+    background-color:#390281;
+    color:white;
+    border:1px solid #390281;
+    padding:0.5rem 1.5rem;
+    border-radius:6px;
+    cursor:pointer;
+
+  }
+   button:hover,
+   button:active{
+    background-color:#6e18b4;
+    border-color:#390281;
+  }
+  a {
+    color:white;
+    text-decoration:none;
+  }
+  
