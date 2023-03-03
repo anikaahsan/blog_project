@@ -130,3 +130,6 @@ MEDIA_URL='/files/'
 
 
 LOGIN_REDIRECT_URL='starting-page'
+
+
+LOGIN_URL='login'

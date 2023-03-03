@@ -1,4 +1,4 @@
-
+{% extends 'base.html' %}
 {% load static %}
 
 
@@ -16,15 +16,18 @@
 			<h1>Sign Up</h1>
 			<form method="POST" action="{% url 'signup' %}">
 				{% csrf_token %}
+				{{ form.non_field_errors }}
 				{% for i in form %}
 				<h3>{{ i.label }}</h3>
 				    {{ i }}<br>
-				{% endfor %}   
+					{{ i.errors }}				
+				{% endfor %}  
+				  <!-- <h3> {{ errors}} </h3> -->
 				<button> signup</button>
 				<br>
 				<br>
 		        
-				<h4>already have a account?? <a href="{% url 'login' %}">login</a></h4>
+				<h4>already have a account?? <a class='text-white p-2' href="{% url 'login' %}">login</a></h4>
 
 			</form>
         

@@ -1,12 +1,13 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Post,   Comment
 from .forms import CommentForm,UserForm,WritePostForm
-from django.template.defaultfilters import slugify
-from django.contrib import messages
 
-# Create your views here.
+
+
 def starting_page(request):
     queryset=Post.objects.all().order_by('-date')[ :3]
 
@@ -21,14 +22,14 @@ def posts(request):
 def post_detail(request,pk):
     if request.method=='POST':
         commentform=CommentForm(request.POST)
-        if request.user.is_authenticated :
-            commentform.email=request.user.email
-
+        
         print(commentform.__dict__)
+
         if commentform.is_valid():
             comment=commentform.save(commit=False)
             comment.post=Post.objects.get(pk=pk)
-            comment.email=request.user.email
+            if request.user.is_authenticated:
+               comment.email=request.user.email
             print(comment.__dict__)
             comment.save()
             print("saved")
@@ -36,17 +37,20 @@ def post_detail(request,pk):
         else:
             print(commentform.errors)
             return HttpResponse("error")    
-        return render(request, 'blog/post-detail.html',{'form':commentform})
+        
 
     else:    
         post =Post.objects.get(pk=pk)
         commentform=CommentForm()
         comment=Comment.objects.filter(post=post).order_by('-pk')
         context=dict(post=post ,
-        form=commentform,
-        comments=comment)
+                     form=commentform,
+                     comments=comment)
 
         return render(request, 'blog/post-detail.html' ,context)
+
+
+
 
 def signup_function(request):
     if request.method=='POST':
@@ -56,8 +60,10 @@ def signup_function(request):
             messages.success(request,'signup successful')
             return redirect('login')
         else:
-            
-            return redirect('signup')
+            print(form.errors)
+            context=dict(errors=form.errors,
+                         form=form)
+            return render(request ,'blog/signupform.html' ,context)
 
 
     else:
@@ -67,27 +73,41 @@ def signup_function(request):
 
 
 
-
+@login_required
 def approve(request ,id ):
     commentobject=Comment.objects.get(pk=id)
     commentobject.is_approved=False 
-    return redirect('post-detail-page', args=[id])
+    return redirect('posts-page')
+    # return HttpResponseRedirect(reverse('post-detail-page', args=[id]))
 
 
+
+@login_required
 def comment_delete(request,id):
     commentobject=Comment.objects.get(pk=id)
     commentobject.delete()
-    return redirect('post-detail-page' ,args=[id])    
+    return redirect('posts-page')
+    # return HttpResponseRedirect(reverse('post-detail-page', args=[id])) 
 
 
+
+@login_required
 def write_post(request):
     if request.method=='POST':
         postform=WritePostForm(request.POST, request.FILES)
-        print("form")
+      
         print(postform.__dict__)
+
         if postform.is_valid():
-            postform.save(commit=True)
+            form=postform.save(commit=False)
+            form.author=request.user
+            print( form.__dict__)
+
+            print(form.author)
+
+            form.save()
             return redirect('posts-page')
+        
         else:
             print(postform.errors)
             print('not saved') 
@@ -100,3 +120,8 @@ def write_post(request):
         postform=WritePostForm()
         context=dict(form=postform)
         return render(request,'blog/writepost.html',context)    
+    
+
+
+
+

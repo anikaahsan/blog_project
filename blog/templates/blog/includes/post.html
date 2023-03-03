@@ -3,9 +3,12 @@
     <article class="post">
 
         <a href="{% url 'post-detail-page' i.pk %}"> 
-
-            <img src="{% static 'blog/images/skydiving.jpg' %}"  alt="skydiving_image" > 
-
+            {% if i.image %}
+               <img src="{{ i.image.url }}"  alt="skydiving_image" > 
+            {% else %}
+               <img src="{% static 'blog/images/skydiving.jpg' %}"  alt="skydiving_image" > 
+            {% endif %}
+            
             <div class="post__content">
                 <h3>{{ i.title}}</h3>
                 <p>
@@ -17,3 +20,10 @@
 
     </article>
 </li>
+
+
+
+
+
+
+
