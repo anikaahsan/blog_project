@@ -15,7 +15,7 @@ class CommentForm(forms.ModelForm):
 
 class UserForm(UserCreationForm):
     email=forms.EmailField()
-    username=forms.CharField
+    username=forms.CharField()
 
     class Meta:
         model=User
@@ -26,7 +26,7 @@ class UserForm(UserCreationForm):
 class WritePostForm(forms.ModelForm):
     class Meta:
         model=Post
-        fields=["title",'image','content']
+        fields=["title",'excerpt','image','content','category']
         
 
 

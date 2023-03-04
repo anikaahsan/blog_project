@@ -3,6 +3,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from .models import Post,   Comment
 from .forms import CommentForm,UserForm,WritePostForm
 
@@ -28,24 +29,30 @@ def post_detail(request,pk):
         if commentform.is_valid():
             comment=commentform.save(commit=False)
             comment.post=Post.objects.get(pk=pk)
+
             if request.user.is_authenticated:
                comment.email=request.user.email
+
             print(comment.__dict__)
             comment.save()
-            print("saved")
             return HttpResponseRedirect(reverse('post-detail-page', args=[pk]))
+        
         else:
             print(commentform.errors)
             return HttpResponse("error")    
         
 
-    else:    
+    else:         
         post =Post.objects.get(pk=pk)
+        related_post=Post.objects.filter(category=post.category)  
         commentform=CommentForm()
         comment=Comment.objects.filter(post=post).order_by('-pk')
-        context=dict(post=post ,
+        context=dict(
+                     post=post ,
                      form=commentform,
-                     comments=comment)
+                     comments=comment,
+                     related_post=related_post
+                     )
 
         return render(request, 'blog/post-detail.html' ,context)
 
@@ -119,9 +126,60 @@ def write_post(request):
     else:    
         postform=WritePostForm()
         context=dict(form=postform)
-        return render(request,'blog/writepost.html',context)    
-    
+        return render(request,'blog/writepost.html',context)   
 
+@login_required
+def author_all_posts(request , pk):
+    post=Post.objects.get(pk=pk)
+    author=post.author
+    queryset=Post.objects.filter(author=author)
+
+    context=dict(queryset=queryset,
+                  author=author)
+
+    return render(request,'blog/author_all_post_beautiful.html' , context)
+
+
+    
+def beautiful(request,pk):
+    if request.method=='POST':
+        commentform=CommentForm(request.POST)
+        
+        print(commentform.__dict__)
+
+        if commentform.is_valid():
+            comment=commentform.save(commit=False)
+            comment.post=Post.objects.get(pk=pk)
+
+            if request.user.is_authenticated:
+               comment.email=request.user.email
+
+            print(comment.__dict__)
+            comment.save()
+            return HttpResponseRedirect(reverse('post-detail-page', args=[pk]))
+        
+        else:
+            print(commentform.errors)
+            return HttpResponse("error")    
+        
+
+    else:         
+        post =Post.objects.get(pk=pk)
+        related_post=Post.objects.filter(category=post.category)  
+        commentform=CommentForm()
+        comment=Comment.objects.filter(post=post).order_by('-pk')
+        context=dict(
+                     post=post ,
+                     form=commentform,
+                     comments=comment,
+                     related_post=related_post
+                     )
+
+        return render(request, 'blog/post_detail_beautiful.html' ,context)
+
+
+
+    return render(request,'blog/post_detail_beautiful.html')
 
 
 
