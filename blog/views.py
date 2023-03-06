@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from .models import Post,   Comment
 from .forms import CommentForm,UserForm,WritePostForm
 
@@ -17,7 +18,17 @@ def starting_page(request):
 
 def posts(request):
     queryset=Post.objects.all()
-    return render(request,'blog/all-posts.html' ,{'post':queryset})
+    paginator=Paginator(queryset,3)
+    page_number=request.GET.get('page')
+    totalpages=paginator.num_pages
+    subqueryset=paginator.get_page(page_number)
+
+    totalpage=[ n+1 for n in range(totalpages)]
+    
+    context=dict(totalpages=totalpage,
+                 post=subqueryset)
+
+    return render(request,'blog/all-posts.html' ,context)
 
 
 def post_detail(request,pk):
@@ -140,7 +151,7 @@ def author_all_posts(request , pk):
     return render(request,'blog/author_all_post_beautiful.html' , context)
 
 
-    
+@login_required  
 def beautiful(request,pk):
     if request.method=='POST':
         commentform=CommentForm(request.POST)
@@ -156,7 +167,7 @@ def beautiful(request,pk):
 
             print(comment.__dict__)
             comment.save()
-            return HttpResponseRedirect(reverse('post-detail-page', args=[pk]))
+            return HttpResponseRedirect(reverse('beautiful', args=[pk]))
         
         else:
             print(commentform.errors)

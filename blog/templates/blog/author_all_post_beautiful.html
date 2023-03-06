@@ -61,7 +61,7 @@
                     <!-- Post preview-->
                     <div class="post-preview">
                         {% for post in queryset %}
-                        <a href="{% url 'post-detail-page' post.pk %}" style="text-decoration:none;">
+                        <a href="{% url 'beautiful' post.pk %}" style="text-decoration:none;">
                             <b><h1 class="post-title">{{ post.title }}</h1></b>
                             <p class="post-meta">
                                 Posted by

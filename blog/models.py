@@ -32,7 +32,7 @@ class Comment(models.Model):
     text=models.TextField()
     post=models.ForeignKey(Post, on_delete=models.CASCADE ,related_name='comments')      
     is_approved=models.BooleanField(default=True)
-
+    
 
 
 

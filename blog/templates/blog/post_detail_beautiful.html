@@ -18,20 +18,21 @@
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+                <!-- <a class="navbar-brand" href="{% url 'starting-page' %}">My Blogs</a> -->
                 
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">About</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Sample Post</a></li>
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact</a></li>
-                    </ul>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'logout' %}">logout</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'write-post' %}">write</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'starting-page' %}">Home</a></li>
+                        
+
+                    </ul> 
                 </div>
             </div>
         </nav>
-        <!-- Page Header-->
-        <header class="masthead" style="background-image: url('assets/img/post-bg.jpg')">
+       <!-- Page Header-->
+        <header class="masthead" style="background-image: url('{{ post.image.url }}')">
             <div class="container position-relative px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
@@ -55,13 +56,65 @@
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                                                           
-                        <a href=""><img class="img-fluid" src="{{ post.image.url }}" alt="..." /></a>
+                        <!-- <a href=""><img class="img-fluid" src="{{ post.image.url }}" alt="..." /></a> -->
                         
                         {{ post.content }}
                         
                     </div>
                 </div>
             </div>
+            <section style="background-color: #ffffff;">
+                <div class="container my-5 py-5">
+                  <div class="row d-flex justify-content-center">
+                    <div class="col-md-12 col-lg-10">
+                      <div class="card text-dark">
+                        <div class="card-body p-4">
+                          <h4 class="mb-0">Recent comments</h4>
+                          <p class="fw-light mb-4 pb-2">Latest Comments section by users</p>
+              
+                          <div class="d-flex flex-start">
+                            <!-- <img class="rounded-circle shadow-1-strong me-3"
+                              src="" alt="avatar" width="60"
+                              height="60" /> -->
+                            <div>
+                                <div class="mb-3">
+                                   
+                                  </div>
+                                <form method="POST" action="{% url 'beautiful' post.pk %}">
+                                    {% csrf_token %}
+                                    {% if request.user.is_authenticated %}
+                                     
+                                          {{form.text}}
+
+                                    {% else %}   
+                                          {{ form }}  
+                                    {% endif %}
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">save comment </button>
+                                </form>
+
+                                {% for comment in comments %}
+                                    <h6 class="fw-bold mb-1">{{ comment.email }}</h6>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <p class="mb-0">
+                                        
+                                        
+                                        </p>
+                                    
+                                    </div>
+                                    <p class="mb-0">
+                                        {{ comment.text }}
+                                    </p>
+                                    <hr class="my-0" />
+                                    <hr class="my-0" style="height: 1px;" />
+                                    <hr class="my-0" />     
+                                {% endfor %}    
+                            </div>
+                          </div>
+                        </div>
+              
+                          
+            </section>
             <hr class="my-4" />
             <hr class="my-4" />
            
@@ -74,30 +127,32 @@
                             <br>
                             <br>
                             <br>
-                            {% for post in related_post %}
-                            <a href="{% url 'post-detail-page' post.pk %}" style="text-decoration:none;">
-                                <b><h1 class="post-title">{{ post.title }}</h1></b>
-                                <p class="post-meta">
-                                    Posted by
-                                    <a href="">{{ post.author }}</a>
-                                    on {{ post.date }}
-                                </p>
-                                <h6 class="post-subtitle">{{ post.excerpt }}</h6>
-                            </a>
-                            
-                             <!-- Divider-->
-                            <hr class="my-4" />
+                            {% for posts in related_post %}
+                                 {% if posts.pk != post.pk %}
+                                        <a href="{% url 'beautiful' post.pk %}" style="text-decoration:none;">
+                                            <b><h1 class="post-title">{{ posts.title }}</h1></b>
+                                            <p class="post-meta">
+                                                Posted by
+                                                <a href="">{{ posts.author }}</a>
+                                                on {{ posts.date }}
+                                            </p>
+                                            <h6 class="post-subtitle">{{ posts.excerpt }}</h6>
+                                        </a>
+                                        <hr class="my-4" />
+                                {% endif %}
                             {% endfor %}
                         </div>
                         <hr class="my-4" />      
                     </div>
                 </div>
             </div>
-    
-
-            
-
         </article>
+
+
+        
+        
+
+
         <!-- Footer-->
         <footer class="border-top">
             <div class="container px-4 px-lg-5">
@@ -140,3 +195,7 @@
         <script src="js/scripts.js"></script>
     </body>
 </html>
+
+
+
+

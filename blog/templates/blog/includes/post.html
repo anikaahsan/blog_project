@@ -1,29 +1,37 @@
 {% load static %}
 <li>
-    <article class="post">
-
-        <a href="{% url 'post-detail-page' i.pk %}"> 
-            {% if i.image %}
-               <img src="{{ i.image.url }}"  alt="skydiving_image" > 
-            {% else %}
-               <img src="{% static 'blog/images/skydiving.jpg' %}"  alt="skydiving_image" > 
-            {% endif %}
-            
-            <div class="post__content">
-                <h3>{{ i.title}}</h3>
-                <p>
-                    {{ i.content}}
-                </p>
+    <a href="{% url 'beautiful' i.pk %}" style='text-decoration:none'> 
+        <div class="card" style="width: 18rem; height: 25rem;">
+            <img class="card-img-top" src="{{ i.image.url }}" alt="Card image cap">
+            <div class="card-body">
+            <h5 class="card-title">{{ i.title}}</h5>
+            <p class="card-text"> {{ i.content|truncatewords:7}}</p>
+            <!-- <a href="{% url 'post-detail-page' i.pk %}" class="btn btn-primary">see more </a> -->
             </div>
-
-        </a>
-
-    </article>
+        </div>
+    </a>
 </li>
 
 
 
 
+  <!-- <article class="post">
 
+    <a href="{% url 'post-detail-page' i.pk %}"> 
+        {% if i.image %}
+           <img src="{{ i.image.url }}"  alt="skydiving_image" > 
+        {% else %}
+           <img src="{% static 'blog/images/skydiving.jpg' %}"  alt="skydiving_image" > 
+        {% endif %}
+        
+        <div class="post__content">
+            <h3>{{ i.title}}</h3>
+            <p>
+                {{ i.content|truncatewords:7}}
+            </p>
+        </div>
 
+    </a>
 
+</article>
+ -->
