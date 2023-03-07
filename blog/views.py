@@ -5,23 +5,27 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.http import Http404
 from .models import Post,   Comment
 from .forms import CommentForm,UserForm,WritePostForm
 
 
+def error_404_view(request,exception):
+    return render(request,'blog/404.html')
 
 def starting_page(request):
-    queryset=Post.objects.all().order_by('-date')[ :3]
+        queryset=Post.objects.all().order_by('-date')[ :3]
+        return render(request,'blog/index.html' ,{'post':queryset})
 
-    return render(request,'blog/index.html' ,{'post':queryset})
-
+  
+        
 
 def posts(request):
     queryset=Post.objects.all()
-    paginator=Paginator(queryset,3)
+    paginator=Paginator(queryset,3) 
     page_number=request.GET.get('page')
-    totalpages=paginator.num_pages
     subqueryset=paginator.get_page(page_number)
+    totalpages=paginator.num_pages
 
     totalpage=[ n+1 for n in range(totalpages)]
     
@@ -32,40 +36,49 @@ def posts(request):
 
 
 def post_detail(request,pk):
-    if request.method=='POST':
-        commentform=CommentForm(request.POST)
-        
-        print(commentform.__dict__)
+   
+        if request.method=='POST':
+            commentform=CommentForm(request.POST)
+            
+            print(commentform.__dict__)
 
-        if commentform.is_valid():
-            comment=commentform.save(commit=False)
-            comment.post=Post.objects.get(pk=pk)
+            if commentform.is_valid():
+                comment=commentform.save(commit=False)
+                try:
+                    comment.post=Post.objects.get(pk=pk)
+                except Exception:
+                  return render(request,'blog/404.html')   
 
-            if request.user.is_authenticated:
-               comment.email=request.user.email
+                if request.user.is_authenticated:
+                  comment.email=request.user.email
 
-            print(comment.__dict__)
-            comment.save()
-            return HttpResponseRedirect(reverse('post-detail-page', args=[pk]))
-        
-        else:
-            print(commentform.errors)
-            return HttpResponse("error")    
-        
+                print(comment.__dict__)
+                comment.save()
+                return HttpResponseRedirect(reverse('post-detail-page', args=[pk]))
+            
+            else:
+                print(commentform.errors)
+                return HttpResponse("error")    
+            
 
-    else:         
-        post =Post.objects.get(pk=pk)
-        related_post=Post.objects.filter(category=post.category)  
-        commentform=CommentForm()
-        comment=Comment.objects.filter(post=post).order_by('-pk')
-        context=dict(
-                     post=post ,
-                     form=commentform,
-                     comments=comment,
-                     related_post=related_post
-                     )
+        else: 
+            try:        
+               post =Post.objects.get(pk=pk)
+            except Exception:
+                  return render(request,'blog/404.html')   
+            related_post=Post.objects.filter(category=post.category)  
+            commentform=CommentForm()
+            comment=Comment.objects.filter(post=post).order_by('-pk')
+            context=dict(
+                        post=post ,
+                        form=commentform,
+                        comments=comment,
+                        related_post=related_post
+                        )
 
-        return render(request, 'blog/post-detail.html' ,context)
+            return render(request, 'blog/post-detail.html' ,context)
+   
+  
 
 
 
@@ -141,56 +154,85 @@ def write_post(request):
 
 @login_required
 def author_all_posts(request , pk):
-    post=Post.objects.get(pk=pk)
-    author=post.author
-    queryset=Post.objects.filter(author=author)
-
+    try:
+        post=Post.objects.get(pk=pk)
+        author=post.author
+        queryset=Post.objects.filter(author=author)
+    except Exception:
+                return render(request,'blog/404.html')
+    
     context=dict(queryset=queryset,
-                  author=author)
+                    author=author)
 
     return render(request,'blog/author_all_post_beautiful.html' , context)
+   
 
 
-@login_required  
+# @login_required  
 def beautiful(request,pk):
-    if request.method=='POST':
-        commentform=CommentForm(request.POST)
-        
-        print(commentform.__dict__)
+   
+        if request.method=='POST':
+            commentform=CommentForm(request.POST)
+            
+            print(commentform.__dict__)
 
-        if commentform.is_valid():
-            comment=commentform.save(commit=False)
-            comment.post=Post.objects.get(pk=pk)
+            if commentform.is_valid():
+                comment=commentform.save(commit=False)
+                try:
+                   comment.post=Post.objects.get(pk=pk)
+                except Exception:
+                  return render(request,'blog/404.html')
+                
+                if request.user.is_authenticated:
+                   comment.email=request.user.email
 
-            if request.user.is_authenticated:
-               comment.email=request.user.email
+                print(comment.__dict__)
+                comment.save()
+                return HttpResponseRedirect(reverse('beautiful', args=[pk]))
+            
+            else:
+                print(commentform.errors)
+                return HttpResponse("error")    
+            
 
-            print(comment.__dict__)
-            comment.save()
-            return HttpResponseRedirect(reverse('beautiful', args=[pk]))
-        
         else:
-            print(commentform.errors)
-            return HttpResponse("error")    
-        
+            try:         
+                post =Post.objects.get(pk=pk)
+                related_post=Post.objects.filter(category=post.category)  
+                commentform=CommentForm()
+                comment=Comment.objects.filter(post=post).order_by('-pk')
+            # except (Post.DoesNotExist,Comment.DoesNotExist):
+            #          raise Http404
+            except Exception:
+                return render(request,'blog/404.html')
+            context=dict(
+                        post=post ,
+                        form=commentform,
+                        comments=comment,
+                        related_post=related_post
+                        )
 
-    else:         
-        post =Post.objects.get(pk=pk)
-        related_post=Post.objects.filter(category=post.category)  
-        commentform=CommentForm()
-        comment=Comment.objects.filter(post=post).order_by('-pk')
-        context=dict(
-                     post=post ,
-                     form=commentform,
-                     comments=comment,
-                     related_post=related_post
+            return render(request, 'blog/post_detail_beautiful.html' ,context)
+    
+
+
+def search(request):
+    if request.method=='POST':
+        search=request.POST['search']
+        queryset=Post.objects.filter(category__title__contains=search)
+     
+        queryset_2=Post.objects.filter(tags__title__contains=search)
+       
+        queryset_3=Post.objects.filter(title__contains=search)     
+
+        context=dict(search=search,
+                     posts=queryset,
+                     posts_2=queryset_2,
+                     posts_3=queryset_3
                      )
+        
+        return render(request,'blog/search.html',context)
 
-        return render(request, 'blog/post_detail_beautiful.html' ,context)
-
-
-
-    return render(request,'blog/post_detail_beautiful.html')
-
-
+    else:
+        return render(request,'blog/search.html')
 

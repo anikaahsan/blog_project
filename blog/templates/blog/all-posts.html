@@ -17,7 +17,7 @@
 <section id="all-posts">
     <h2> All posts</h2>
     <ul>
-      {% for i in post %}
+      {% for post in post %}
         {% include 'blog/includes/post.html' %}
        
       {% endfor %}  
@@ -30,21 +30,21 @@
 <nav aria-label="Page navigation example">
   <ul class="pagination justify-content-center">
 
-    {% if paginator.has_previous %}
-        <li class="page-item disabled">    
-            <a class="page-link" href="#" tabindex="-1">Previous</a>      
+    {% if post.has_previous %}
+        <li class="page-item ">    
+          <a class="page-link" href="/post/?page={{ post.previous_page_number }}">previous</a>
         </li>
     {% endif %} 
 
     {% for n in totalpages %}
     <li class="page-item">
-         <a class="page-link" href="post/?page={{n}}">{{n}}</a>
+         <a class="page-link" href="/post/?page={{n}}">{{n}}</a>
     </li>
     {% endfor %}
 
-    {% if paginator.has_next %}
+    {% if post.has_next %}
       <li class="page-item">
-        <a class="page-link" href="#">Next</a>
+        <a class="page-link" href="/post/?page={{ post.next_page_number }}">Next</a>
       </li>
     {% endif %}
   </ul>

@@ -18,8 +18,14 @@
 <body>
     <header id="main-navigation">
         <h1><a href="{% url 'starting-page' %}">MY BLOG</a></h1>
+
+        <form class="d-flex" method="post" action="{% url 'search' %}">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+
         <nav>
-           
             {% if user.is_authenticated %}
             <a class="p-3" href="{% url 'logout' %}">logout</a>
             <a class="'p-3" href="{% url 'write-post' %}">write a post</a>
@@ -28,7 +34,9 @@
             <a class="p-3" href="{% url 'signup' %}">signup</a>
             {% endif %}
             <a class="p-3" href="{% url 'posts-page'%}">All Posts</a>
+            
         </nav>
+       
     </header>
 
     {% block content %}
