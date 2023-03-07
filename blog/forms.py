@@ -1,9 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Comment ,Post
+from .models import Comment ,Post,Tag
 
 class CommentForm(forms.ModelForm):
+    
     class Meta:
         model=Comment
         exclude=['post' ,'username','is_approved']
@@ -24,10 +25,27 @@ class UserForm(UserCreationForm):
 
 
 class WritePostForm(forms.ModelForm):
+    tags=forms.ModelMultipleChoiceField(queryset=Tag.objects.all(),widget=forms.CheckboxSelectMultiple)
     class Meta:
         model=Post
-        fields=["title",'excerpt','image','content','category']
+        fields=["title",'excerpt','image','content','category','tags']
         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

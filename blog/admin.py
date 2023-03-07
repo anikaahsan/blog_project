@@ -18,7 +18,9 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display=['title']
 
 
-
+@admin.register(models.Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display=['title']
 
 
 

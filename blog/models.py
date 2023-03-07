@@ -9,6 +9,12 @@ class Category(models.Model):
     def __str__(self):
         return self.title
 
+class Tag(models.Model):
+    title=models.CharField(max_length=255,unique=True)
+
+    def __str__(self):
+        return self.title
+
 
 class Post(models.Model):
     title=models.CharField(max_length=255)
@@ -20,7 +26,7 @@ class Post(models.Model):
     content=models.TextField()
     author=models.ForeignKey(User , on_delete=models.SET_NULL ,null=True,related_name='posts')
     category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,blank=True)
-    
+    tags=models.ManyToManyField(Tag,related_name='posts',null=True)
 
     def __str__(self):
         return self.title
@@ -46,11 +52,6 @@ class Comment(models.Model):
 
 # Create your models here.
 
-# class Tag(models.Model):
-#     caption=models.CharField(max_length=255)
-
-#     def __str__(self):
-#         return self.caption
 
 
 
