@@ -29,18 +29,19 @@
         {% include 'blog/includes/post.html'  %}
         {% endfor %}
     </ul>
-
+   
 </section>
 
-<!-- <section id="about">
-    <h2>terms and conditions</h2>
-    <p>make sure that your post is not offensive and does not 
-        violate rules and regulation!!!!
-    </p>
-    <p>
-      enjoy blogging with us!!!!
-    </p>
-</section> -->
+<h2>categories:</h2>
+{% for category in categories %}
+         <ul>
+            <li><a href="{% url 'category' category.title %}">{{ category }}</a></li>
+         </ul>
+{% endfor %}  
 
+<h2>Archive</h2>
+{% for month in months %}
+<a href="">{{ month }}</a>
+{% endfor %}
 
 {% endblock %}

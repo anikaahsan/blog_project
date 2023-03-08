@@ -4,7 +4,7 @@ from .import models
 # Register your models here.
 @admin.register(models.Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display=['title','author','date','category']
+    list_display=['title','author','date','category','date']
     list_filter=['author','date','title','category']
     prepopulated_fields={'slug':["title"]}
     

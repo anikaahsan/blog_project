@@ -5,9 +5,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.db.models.functions import ExtractMonth
 from django.http import Http404
-from .models import Post,   Comment
+from .models import Post,   Comment,Category
 from .forms import CommentForm,UserForm,WritePostForm
+import calendar
 
 
 def error_404_view(request,exception):
@@ -15,7 +17,30 @@ def error_404_view(request,exception):
 
 def starting_page(request):
         queryset=Post.objects.all().order_by('-date')[ :3]
-        return render(request,'blog/index.html' ,{'post':queryset})
+
+        categories=Category.objects.all()
+        postmonth_list=[]
+        postmonth_uniquelist=[]
+        posts=Post.objects.all().annotate(post_month=ExtractMonth('date'))
+
+        for post in posts:
+            post_months=calendar.month_name[post.post_month]
+            postmonth_list.append(post_months)
+        
+        for x in postmonth_list:
+                if x not in postmonth_uniquelist:
+                     postmonth_uniquelist.append(x)
+
+        print(postmonth_uniquelist)    
+
+
+
+
+        context=dict(categories=categories,
+                     post=queryset,
+                     months=postmonth_uniquelist) 
+
+        return render(request,'blog/index.html' ,context)
 
   
         
@@ -33,53 +58,6 @@ def posts(request):
                  post=subqueryset)
 
     return render(request,'blog/all-posts.html' ,context)
-
-
-def post_detail(request,pk):
-   
-        if request.method=='POST':
-            commentform=CommentForm(request.POST)
-            
-            print(commentform.__dict__)
-
-            if commentform.is_valid():
-                comment=commentform.save(commit=False)
-                try:
-                    comment.post=Post.objects.get(pk=pk)
-                except Exception:
-                  return render(request,'blog/404.html')   
-
-                if request.user.is_authenticated:
-                  comment.email=request.user.email
-
-                print(comment.__dict__)
-                comment.save()
-                return HttpResponseRedirect(reverse('post-detail-page', args=[pk]))
-            
-            else:
-                print(commentform.errors)
-                return HttpResponse("error")    
-            
-
-        else: 
-            try:        
-               post =Post.objects.get(pk=pk)
-            except Exception:
-                  return render(request,'blog/404.html')   
-            related_post=Post.objects.filter(category=post.category)  
-            commentform=CommentForm()
-            comment=Comment.objects.filter(post=post).order_by('-pk')
-            context=dict(
-                        post=post ,
-                        form=commentform,
-                        comments=comment,
-                        related_post=related_post
-                        )
-
-            return render(request, 'blog/post-detail.html' ,context)
-   
-  
-
 
 
 
@@ -105,24 +83,6 @@ def signup_function(request):
 
 
 @login_required
-def approve(request ,id ):
-    commentobject=Comment.objects.get(pk=id)
-    commentobject.is_approved=False 
-    return redirect('posts-page')
-    # return HttpResponseRedirect(reverse('post-detail-page', args=[id]))
-
-
-
-@login_required
-def comment_delete(request,id):
-    commentobject=Comment.objects.get(pk=id)
-    commentobject.delete()
-    return redirect('posts-page')
-    # return HttpResponseRedirect(reverse('post-detail-page', args=[id])) 
-
-
-
-@login_required
 def write_post(request):
     if request.method=='POST':
         postform=WritePostForm(request.POST, request.FILES)
@@ -144,13 +104,14 @@ def write_post(request):
             print('not saved') 
             return redirect('write-post')  
 
-
-
-
     else:    
         postform=WritePostForm()
         context=dict(form=postform)
         return render(request,'blog/writepost.html',context)   
+    
+
+
+
 
 @login_required
 def author_all_posts(request , pk):
@@ -167,10 +128,8 @@ def author_all_posts(request , pk):
     return render(request,'blog/author_all_post_beautiful.html' , context)
    
 
-
-# @login_required  
-def beautiful(request,pk):
-   
+  
+def post_detail(request,pk):   
         if request.method=='POST':
             commentform=CommentForm(request.POST)
             
@@ -201,8 +160,7 @@ def beautiful(request,pk):
                 related_post=Post.objects.filter(category=post.category)  
                 commentform=CommentForm()
                 comment=Comment.objects.filter(post=post).order_by('-pk')
-            # except (Post.DoesNotExist,Comment.DoesNotExist):
-            #          raise Http404
+            
             except Exception:
                 return render(request,'blog/404.html')
             context=dict(
@@ -235,4 +193,21 @@ def search(request):
 
     else:
         return render(request,'blog/search.html')
+
+
+
+
+def category(request,category ):
+   category=category
+   posts=Post.objects.filter(category__title=category)
+
+   context=dict(posts=posts,
+                category=category)
+   return render(request , 'blog/categorypost.html',context)
+
+
+def month_post(request ,month ):
+     posts=Post.objects.filter()
+     
+
 
