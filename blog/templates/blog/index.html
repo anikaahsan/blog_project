@@ -13,7 +13,6 @@
 {% block content %}
 
 
-
 <section id="welcome">
     <header>
         <img src="{% static 'blog/images/blog.jpg' %}" alt="Author of the blog">
@@ -22,26 +21,63 @@
     <p>A wonderful plateform for blogging!!</p>
 </section>
 
+
+<style>
+    .left {
+      position: absolute;
+      left: 70px;
+      width: 300px;
+      border: 3px solid #f5f8f2;
+      padding: 10px;
+      margin: 5rem auto 2rem auto;
+    }
+</style>
+<div class="left">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-12 col-lg-10">
+            <h2>Archive</h2>
+            {% for month_year in months_years %}
+                <ul>
+                    <li>
+                        <a href="{% url 'archive'  month_year  %}">{{ month_year }}</a>
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<style>
+    .right {
+      position: absolute;
+      right: 70px;
+      width: 300px;
+      border: 3px solid #f5f8f2;
+      padding: 10px;
+      margin: 5rem auto 2rem auto;
+    }
+</style>
+
+<div class="right">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-12 col-lg-10">
+            <h2>categories:</h2>
+            {% for category in categories %}
+                    <ul>
+                        <li><a href="{% url 'category' category.title %}">{{ category }}</a></li>
+                    </ul>
+            {% endfor %}  
+        </div>
+    </div>
+</div>
+
 <section id="latest-posts">
     <h2>latest thoughts</h2>
     <ul>
         {% for post in post %}
-        {% include 'blog/includes/post.html'  %}
+            {% include 'blog/includes/post.html'  %}
         {% endfor %}
     </ul>
    
 </section>
-
-<h2>categories:</h2>
-{% for category in categories %}
-         <ul>
-            <li><a href="{% url 'category' category.title %}">{{ category }}</a></li>
-         </ul>
-{% endfor %}  
-
-<h2>Archive</h2>
-{% for month_year in months_years %}
-<a href="{% url 'archive'  month_year  %}">{{ month_year }}</a>
-{% endfor %}
 
 {% endblock %}

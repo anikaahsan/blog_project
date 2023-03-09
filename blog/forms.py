@@ -37,7 +37,14 @@ class WritePostForm(forms.ModelForm):
         fields=["title",'excerpt','image','content','category','tags']
         
 
+class SearchForm(forms.Form):
+    query=forms.CharField()
 
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields['query'].label='search for'
+        self.fields['query'].widget.attrs.update({'class':'form-control'})
+    
 
 
 

@@ -15,7 +15,7 @@
 {% block content %}
 
 <section id="all-posts">
-    <h2>  Search results for "{{ search}}"</h2>
+    <h2>  Search results:</h2>
     {% if posts %}
         <ul>
         {% for post in posts %}
@@ -55,7 +55,7 @@
                 <div class="post-preview">
                     {% if posts %}
                             {% for post in posts %}
-                            <a href="{% url 'beautiful' post.pk %}" style="text-decoration:none;">
+                            <a href="{% url 'post_detail' post.pk %}" style="text-decoration:none;">
                                 <b><h1 class="post-title">{{ post.title }}</h1></b>
                                 <p class="post-meta">
                                     Posted by
@@ -71,7 +71,7 @@
 
                     {% elif post_2 %}
                             {% for post in posts_2 %}
-                            <a href="{% url 'beautiful' post.pk %}" style="text-decoration:none;">
+                            <a href="{% url 'post_detail' post.pk %}" style="text-decoration:none;">
                                 <b><h1 class="post-title">{{ post.title }}</h1></b>
                                 <p class="post-meta">
                                     Posted by
@@ -86,7 +86,7 @@
                             {% endfor %}
                     {% else %}
                             {% for post in posts_3 %}
-                            <a href="{% url 'beautiful' post.pk %}" style="text-decoration:none;">
+                            <a href="{% url 'post_detail' post.pk %}" style="text-decoration:none;">
                                 <b><h1 class="post-title">{{ post.title }}</h1></b>
                                 <p class="post-meta">
                                     Posted by

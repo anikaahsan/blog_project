@@ -7,9 +7,10 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models.functions import ExtractMonth
 from django.db.models import F,Value
+from django.template.defaultfilters import slugify
 from django.http import Http404
 from .models import Post,   Comment,Category
-from .forms import CommentForm,UserForm,WritePostForm
+from .forms import CommentForm,UserForm,WritePostForm,SearchForm
 import calendar
 
 
@@ -19,26 +20,11 @@ def error_404_view(request,exception):
 def starting_page(request):
         queryset=Post.objects.all().order_by('-date')[ :3]
 
-        categories=Category.objects.all()
-        postmonth_list=[]
-        postmonth_uniquelist=[]
-        posts=Post.objects.all().annotate(post_month=ExtractMonth('date'))
-        
+        context=dict(
+                     post=queryset
+                     ) 
 
-        for post in posts:
-            post_months=calendar.month_name[post.post_month]
-            postmonth_list.append(f'{post_months}{post.date.year}')
-        
-        for x in postmonth_list:
-                if x not in postmonth_uniquelist:
-                     postmonth_uniquelist.append(x)
-
-        print(postmonth_uniquelist)    
-        context=dict(categories=categories,
-                     post=queryset,
-                     months_years=postmonth_uniquelist) 
-
-        return render(request,'blog/index.html' ,context)
+        return render(request,'blog/index.html',context)
 
 
 def archive(request,month_years):
@@ -48,12 +34,21 @@ def archive(request,month_years):
           post.month=calendar.month_name[post.month]
           post.year=post.date.year
           post.month_year=f'{post.month}{post.year}'
+          
           print(f'{post.month}{post.year}')
+          
      for post in posts:
           print(post.month_year)
-     posts_all=Post.objects.filter(month_year=month_years)
-     print(posts_all)
-     context=dict(posts=posts_all)
+    #  posts_all=Post.objects.filter(month_year=month_years)
+
+     queryset=[]
+     for post in posts:
+         if post.month_year==month_years:
+              queryset.append(post)
+          
+        
+     context=dict(posts=queryset,
+                  month_year=month_years)             
      return render(request,'blog/archive.html',context)
      
         
@@ -99,12 +94,15 @@ def signup_function(request):
 def write_post(request):
     if request.method=='POST':
         postform=WritePostForm(request.POST, request.FILES)
-      
+        
         print(postform.__dict__)
 
         if postform.is_valid():
+            title=postform.cleaned_data['title']
             form=postform.save(commit=False)
             form.author=request.user
+            form.slug=slugify(title)
+            
             print( form.__dict__)
 
             print(form.author)
@@ -113,9 +111,12 @@ def write_post(request):
             return redirect('posts-page')
         
         else:
+             
             print(postform.errors)
             print('not saved') 
-            return redirect('write-post')  
+            # return redirect('write-post') 
+            context=dict(form=postform)
+            return render(request,'blog/writepost.html',context) 
 
     else:    
         postform=WritePostForm()
@@ -127,11 +128,11 @@ def write_post(request):
 
 
 @login_required
-def author_all_posts(request , pk):
+def author_all_posts(request ,author):
     try:
-        post=Post.objects.get(pk=pk)
-        author=post.author
-        queryset=Post.objects.filter(author=author)
+        # post=Post.objects.get(pk=pk)
+        # author=post.author
+        queryset=Post.objects.filter(author__username=author)
     except Exception:
                 return render(request,'blog/404.html')
     
@@ -141,8 +142,8 @@ def author_all_posts(request , pk):
     return render(request,'blog/author_all_post_beautiful.html' , context)
    
 
-  
-def post_detail(request,pk):   
+ 
+def post_detail(request,slugs):   
         if request.method=='POST':
             commentform=CommentForm(request.POST)
             
@@ -151,7 +152,8 @@ def post_detail(request,pk):
             if commentform.is_valid():
                 comment=commentform.save(commit=False)
                 try:
-                   comment.post=Post.objects.get(pk=pk)
+                 
+                   comment.post=Post.objects.get(slug=slugs)
                 except Exception:
                   return render(request,'blog/404.html')
                 
@@ -160,7 +162,7 @@ def post_detail(request,pk):
 
                 print(comment.__dict__)
                 comment.save()
-                return HttpResponseRedirect(reverse('beautiful', args=[pk]))
+                return HttpResponseRedirect(reverse('post_detail', args=[slugs]))
             
             else:
                 print(commentform.errors)
@@ -169,7 +171,7 @@ def post_detail(request,pk):
 
         else:
             try:         
-                post =Post.objects.get(pk=pk)
+                post =Post.objects.get(slug=slugs)
                 related_post=Post.objects.filter(category=post.category)  
                 commentform=CommentForm()
                 comment=Comment.objects.filter(post=post).order_by('-pk')
@@ -187,28 +189,56 @@ def post_detail(request,pk):
     
 
 
-def search(request):
-    if request.method=='POST':
-        search=request.POST['search']
-        queryset=Post.objects.filter(category__title__contains=search)
+# def search(request,str):
+#     if request.method=='POST':
+#         search=request.POST['search']
+#         queryset=Post.objects.filter(category__title__contains=search)
      
-        queryset_2=Post.objects.filter(tags__title__contains=search)
+#         queryset_2=Post.objects.filter(tags__title__contains=search)
        
-        queryset_3=Post.objects.filter(title__contains=search)     
+#         queryset_3=Post.objects.filter(title__contains=search)     
 
-        context=dict(search=search,
-                     posts=queryset,
-                     posts_2=queryset_2,
-                     posts_3=queryset_3
-                     )
+#         context=dict(search=search,
+#                      posts=queryset,
+#                      posts_2=queryset_2,
+#                      posts_3=queryset_3
+#                      )
         
-        return render(request,'blog/search.html',context)
+#         return render(request,'blog/search.html',context)
 
-    else:
-        return render(request,'blog/search.html')
+#     else:
+#         return render(request,'blog/search.html')
 
 
+def search(request):
+    form=SearchForm()
+    queryset=[]
+    queryset_2=[]
+    queryset_3=[]
+  
 
+    if 'query' in request.GET:
+        form=SearchForm(request.GET)
+        if form.is_valid():
+            query_data=form.cleaned_data['query']
+            print(query_data)
+            querysets=Post.objects.filter(category__title__contains=query_data)
+            querysets_2=Post.objects.filter(tags__title__contains=query_data)
+       
+            querysets_3=Post.objects.filter(title__contains=query_data)  
+            queryset=querysets
+            queryset_2=querysets_2
+            queryset_3=querysets_3   
+
+    
+    context=dict(form=form,
+                 posts=queryset,
+                 queryset_2=queryset_2,
+                 queryset_3=queryset_3
+                 )
+
+
+    return render(request,'blog/indexV2.html',context)
 
 def category(request,category ):
    category=category
@@ -219,8 +249,8 @@ def category(request,category ):
    return render(request , 'blog/categorypost.html',context)
 
 
-def month_post(request ,month ):
-     posts=Post.objects.filter()
+def startingpage_v2(request):
+     return render(request,'blog/baseV2.html')
      
 
 

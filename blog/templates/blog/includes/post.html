@@ -1,6 +1,6 @@
 {% load static %}
 <li>
-    <a href="{% url 'beautiful' post.pk %}" style='text-decoration:none'> 
+    <a href="{% url 'post_detail' post.slug %}" style='text-decoration:none'> 
         <div class="card" style="width: 18rem; height: 25rem;">
             <img class="card-img-top" src="{{ post.image.url }}" alt="Card image cap">
             <div class="card-body">

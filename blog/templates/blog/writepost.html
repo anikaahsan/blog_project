@@ -24,10 +24,15 @@
 
     <form method="POST" action="{% url 'write-post' %}" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        {% for error in form.non_field_errors %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+           <h3>{{ field.label }}</h3>
+           {{ field}}<br>
+           {{ field.errors }}
+        {% endfor %}   
+        <!-- {% for error in form.non_field_errors %}
                {{ error }}
-        {% endfor %}       
+        {% endfor %}        -->
         <!-- <input type="submit" value="Save" /> -->
         <button>save</button>
     </form>
