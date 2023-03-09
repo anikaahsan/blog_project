@@ -12,7 +12,8 @@ urlpatterns=[
              path('author_all_post/<pk>',views.author_all_posts ,name='author_all_post'),
              path('beautiful/<pk>',views.post_detail ,name='beautiful'),
              path('search/',views.search ,name='search'),
-             path('category/<str:category>', views.category ,name='category')
+             path('category/<str:category>', views.category ,name='category'),
+             path('archive/<str:month_years>', views.archive ,name='archive'),
              
 ]
 

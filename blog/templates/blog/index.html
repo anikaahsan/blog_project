@@ -40,8 +40,8 @@
 {% endfor %}  
 
 <h2>Archive</h2>
-{% for month in months %}
-<a href="">{{ month }}</a>
+{% for month_year in months_years %}
+<a href="{% url 'archive'  month_year  %}">{{ month_year }}</a>
 {% endfor %}
 
 {% endblock %}

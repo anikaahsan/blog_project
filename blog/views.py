@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models.functions import ExtractMonth
+from django.db.models import F,Value
 from django.http import Http404
 from .models import Post,   Comment,Category
 from .forms import CommentForm,UserForm,WritePostForm
@@ -22,27 +23,39 @@ def starting_page(request):
         postmonth_list=[]
         postmonth_uniquelist=[]
         posts=Post.objects.all().annotate(post_month=ExtractMonth('date'))
+        
 
         for post in posts:
             post_months=calendar.month_name[post.post_month]
-            postmonth_list.append(post_months)
+            postmonth_list.append(f'{post_months}{post.date.year}')
         
         for x in postmonth_list:
                 if x not in postmonth_uniquelist:
                      postmonth_uniquelist.append(x)
 
         print(postmonth_uniquelist)    
-
-
-
-
         context=dict(categories=categories,
                      post=queryset,
-                     months=postmonth_uniquelist) 
+                     months_years=postmonth_uniquelist) 
 
         return render(request,'blog/index.html' ,context)
 
-  
+
+def archive(request,month_years):
+     posts=Post.objects.annotate(month=ExtractMonth('date') ,year=F('date'))
+    
+     for post in posts:
+          post.month=calendar.month_name[post.month]
+          post.year=post.date.year
+          post.month_year=f'{post.month}{post.year}'
+          print(f'{post.month}{post.year}')
+     for post in posts:
+          print(post.month_year)
+     posts_all=Post.objects.filter(month_year=month_years)
+     print(posts_all)
+     context=dict(posts=posts_all)
+     return render(request,'blog/archive.html',context)
+     
         
 
 def posts(request):

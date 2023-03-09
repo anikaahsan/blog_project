@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 
 
@@ -26,9 +27,14 @@ class Post(models.Model):
     category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,blank=True)
     tags=models.ManyToManyField(Tag,related_name='posts')
     likes=models.ManyToManyField(User,related_name='post_liked')
+    month_year=models.CharField(max_length=255,null=True,blank=True)
 
     def __str__(self):
         return self.title
+    
+    def slugify(self):
+        slug=slugify(self.title)
+        return slug
 
 
 class Comment(models.Model):
