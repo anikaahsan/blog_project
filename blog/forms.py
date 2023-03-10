@@ -42,8 +42,8 @@ class SearchForm(forms.Form):
 
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
-        self.fields['query'].label='search for'
-        self.fields['query'].widget.attrs.update({'class':'form-control'})
+        self.fields['query'].label=''
+        self.fields['query'].widget.attrs.update({'class':"form-control mr-sm-2"})
     
 
 

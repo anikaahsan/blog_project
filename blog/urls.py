@@ -14,7 +14,8 @@ urlpatterns=[
              path('search/',views.search ,name='search'),
              path('category/<str:category>', views.category ,name='category'),
              path('archive/<str:month_years>', views.archive ,name='archive'),
-             path('startingpage' ,views.startingpage_v2 , name='startingpagev2')
+            #  path('index_v2' ,views.startingpage_v2 , name='startingpagev2'),
+             path('basev2',views.basev2,name='basev2')
 ]
 
 

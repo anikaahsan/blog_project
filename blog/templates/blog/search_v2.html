@@ -1,0 +1,34 @@
+
+{% extends 'basev2.html'%}
+{% load static %}
+
+
+{% block middlecontent %}
+    <div class="container">
+        <h2>  Search results: </h2>
+            {% if posts %}
+                <ul>
+                {% for post in posts %}
+                    {% include 'blog/includes/post.html' %}
+                
+                {% endfor %}  
+                </ul>
+            {% elif post_2 %}
+                <ul>
+                    {% for post in posts_2 %}
+                        {% include 'blog/includes/post.html' %}
+                    
+                    {% endfor %}  
+                </ul>
+            {% elif posts_3 %}    
+                <ul>
+                    {% for post in posts_3 %}
+                        {% include 'blog/includes/post.html' %}
+                    
+                    {% endfor %}  
+                </ul>
+            {% else %}    
+            <h3>no results found!!</h3>
+            {% endif %}
+    </div> 
+{% endblock %}

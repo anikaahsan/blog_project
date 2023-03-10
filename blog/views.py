@@ -189,28 +189,63 @@ def post_detail(request,slugs):
     
 
 
-# def search(request,str):
-#     if request.method=='POST':
-#         search=request.POST['search']
-#         queryset=Post.objects.filter(category__title__contains=search)
-     
-#         queryset_2=Post.objects.filter(tags__title__contains=search)
-       
-#         queryset_3=Post.objects.filter(title__contains=search)     
-
-#         context=dict(search=search,
-#                      posts=queryset,
-#                      posts_2=queryset_2,
-#                      posts_3=queryset_3
-#                      )
-        
-#         return render(request,'blog/search.html',context)
-
-#     else:
-#         return render(request,'blog/search.html')
 
 
 def search(request):
+    if request.method=='POST':
+        form=SearchForm(request.POST)
+        if form.is_valid():
+            query_data=form.cleaned_data['query']
+            querysets=Post.objects.filter(category__title__contains=query_data)
+            querysets_2=Post.objects.filter(tags__title__contains=query_data)
+        
+            querysets_3=Post.objects.filter(title__contains=query_data)  
+            queryset=querysets
+            queryset_2=querysets_2
+            queryset_3=querysets_3   
+
+    
+            context=dict(form=form,
+                 posts=queryset,
+                 post_2=queryset_2,
+                 post_3=queryset_3
+                 )
+
+           
+            return render(request,'blog/search_v2.html',context)
+        else:
+             context=dict(form=form)
+             return render(request,'blog/search_v2.html',context)
+    
+    else:
+        form=SearchForm()
+        context=dict(form=form)
+        return render(request,'blog/search_v2.html',context)
+
+    
+        
+        
+    
+    
+            
+
+
+
+    return render(request,'blog/indexV2.html',context)
+
+def category(request,category ):
+   category=category
+   posts=Post.objects.filter(category__title=category)
+
+   context=dict(posts=posts,
+                category=category)
+   return render(request , 'blog/categorypost.html',context)
+
+
+def basev2(request):
+    
+
+
     form=SearchForm()
     queryset=[]
     queryset_2=[]
@@ -238,19 +273,8 @@ def search(request):
                  )
 
 
-    return render(request,'blog/indexV2.html',context)
-
-def category(request,category ):
-   category=category
-   posts=Post.objects.filter(category__title=category)
-
-   context=dict(posts=posts,
-                category=category)
-   return render(request , 'blog/categorypost.html',context)
-
-
-def startingpage_v2(request):
-     return render(request,'blog/baseV2.html')
+  
+    return render(request,'basev2.html',context)
      
 
 
