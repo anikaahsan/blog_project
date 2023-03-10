@@ -64,6 +64,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                  'blog.context_processors.category',
+              
                 
             ],
         },
@@ -134,7 +135,7 @@ MEDIA_URL='/files/'
 
 
 
-LOGIN_REDIRECT_URL='starting-page'
+LOGIN_REDIRECT_URL='basev2'
 
 
 LOGIN_URL='login'

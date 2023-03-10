@@ -1,0 +1,70 @@
+{% extends 'basev2.html' %}
+{% load static %}
+
+
+
+
+
+
+{% block middlecontent %}
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('assets/img/home-bg.jpg')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1>Latest posts </h1>
+                       
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- Main Content-->
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <!-- Post preview-->
+            <div class="post-preview">
+                {% for post in post %}
+                <a href="{% url 'post_detail' post.slug %}" style="text-decoration:none;">
+                    <b><h1 class="post-title">{{ post.title }}</h1></b>
+                    <p class="post-meta">
+                        Posted by
+                        <a href="">{{ post.author }}</a>
+                        on {{ post.date }}
+                    </p>
+                    <h6 class="post-subtitle">{{ post.excerpt }}</h6>
+                </a>
+                
+                 <!-- Divider-->
+                <hr class="my-4" />
+                {% endfor %}
+            </div>
+            <hr class="my-4" />      
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+</body>
+{% endblock %}
+
+
+<div class="d-flex justify-content-center">
+    <h2>latest thoughts</h2>
+    <ul>
+        {% for post in post %}
+            {% include 'blog/includes/post.html'  %}
+        {% endfor %}
+    </ul>
+   
+</div>
+

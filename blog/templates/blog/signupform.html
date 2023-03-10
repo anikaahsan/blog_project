@@ -1,18 +1,19 @@
-{% extends 'base.html' %}
+
 {% load static %}
 
 
 
 
 
-{% block css_files %}
+{% block css %}
 <link rel="stylesheet" href="{% static 'blog/signup.css' %}" >
 
 {% endblock %}
 
-{% block content %}
-  
-        <div class="form-wrap">
+{% block middlecontent %}
+<h1><a href="{% url 'basev2' %}">MY BLOG</a></h1>
+  <div class="container-fluid">
+          <div class="form-wrap">
 			<h1>Sign Up</h1>
 			<form method="POST" action="{% url 'signup' %}">
 				{% csrf_token %}
@@ -31,18 +32,6 @@
 
 			</form>
         
-            <!-- <form> -->
-            
-               
-
-                <!-- <input type="text" placeholder="Name">
-                <input type="text" placeholder="Username">
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <input type="password" placeholder="Confirm Password">
-                <input type="button" value="Sign Up"> -->
-            
-            <!-- </form> -->
-        
-        </div>      
+        </div>     
+	</div> 
 {% endblock %}

@@ -13,10 +13,15 @@ class CommentForm(forms.ModelForm):
             'text':'your comment'
 
         }
-        widget={'text':forms.Textarea(attrs={ 'class':'form-control'}),
-                  'email':forms.TextInput(attrs={'class':'form-control'})                    
+        def __init__(self,*args,**kwargs):
+            super().__init__(*args,**kwargs)
+            
+            self.fields['text'].widget.attrs.update({'class':"form-control mr-sm-2", 'rows':"5" ,'id':"comment"})
+        
+        # widget={'text':forms.Textarea(attrs={ 'class':'form-control', 'rows':"5" ,'id':"comment" }),
+        #           'email':forms.TextInput(attrs={'class':'form-control'  })                    
 
-        }
+        # }
 
 class UserForm(UserCreationForm):
     email=forms.EmailField()
